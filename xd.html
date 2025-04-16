@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="estilos.css">
+</head>
+
+<body>
+    <div id="container">
+        <div class="orden">
+            <h1>REGISTRARSE</h1>
+            <input type="text" id="nombres" placeholder="Nombres" />
+            <input type="text" id="apellidos" placeholder="apellidos" />
+            <input type="number" id="telefono" placeholder="Numero de telefono" />
+            <select name="tipo de documento" id="lista">
+                <option value="CC">cedula de ciudadania</option>
+                <option value="CE">cedula de extranjeria</option>
+            </select>
+            <input type="number" id="documento" placeholder="numero de documento" />
+            <input type="text" id="correo" placeholder="correo electronico" />
+            <input type="date" id="nacimiento" placeholder="fecha de nacimiento" />
+            <button onclick="enviar()">ENVIAR</button>
+        </div>
+        <div id="listaDatos">
+
+        </div>
+    </div>
+
+</body>
+<script>
+    let data = []
+    function enviar() {
+        let datos = {}
+        datos = {
+            nombre: document.getElementById("nombres").value,
+            apellidos: document.getElementById("apellidos").value,
+            telefono: document.getElementById("telefono").value
+        }
+        data.unshift(datos)
+        console.log(data);
+        formaPintarLista1()
+    }
+
+    function formaPintarLista1() {
+        document.getElementById("listaDatos").textContent = ""
+        data.forEach((item, index) => {
+            const ul = document.createElement("ul")
+            const li = document.createElement("li")
+            const li2 = document.createElement("li")
+            const boton = document.createElement("button")
+            boton.textContent = "❌"
+            boton.addEventListener("click", () => {
+            })
+            li.textContent = "El nombre es: " + item.nombre + " el apellido es " + item.apellidos + " y el telfono es: " + item.telefono
+            li2.textContent = item.apellidos
+            li.appendChild(boton)
+            ul.appendChild(li)
+            document.getElementById("listaDatos").appendChild(ul)
+        })
+    }
+
+
+    function formaPintarLista2() {
+        document.getElementById("listaDatos").textContent = ""
+        data.forEach((item, index) => {
+            document.getElementById("listaDatos").innerHTML += `
+                <ul>
+                    <li>${item.nombre} <button onclick='eliminar()'>❌</button></li>    
+                    
+                </ul>
+            `
+        })
+    }
+
+</script>
+<style>
+    table {
+        border: 2px solid orange;
+    }
+
+    th {
+        border: 2px solid orange;
+    }
+</style>
+
+</html>

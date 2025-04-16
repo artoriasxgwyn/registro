@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registro Mejorado</title>
+  <link href="https://fonts.googleapis.com/css2?family=Metal+Mania&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0px;
+      padding: 0px;
+      box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Metal Mania', cursive;
+    }
+
+    .container {
+      width: 100%;
+      height: 100vh;
+      background-image: url(https://i.pinimg.com/736x/bb/07/dc/bb07dc7380c43f4b10538ae8ceb17abb.jpg);
+      background-position: center;
+      background-size: cover;
+      display: flex;
+      flex-direction: column;
+      text-align: center;
+      align-items: center;
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .orden {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 300px;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      max-width: 900px;
+    }
+
+    th,
+    td {
+      border: 1px solid orange;
+      padding: 8px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #fffae5;
+    }
+
+    button {
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+
+    .alerta {
+    background-image: url(https://i.pinimg.com/736x/8e/2e/83/8e2e83de390aefd50661164760b1ca5c.jpg);
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+     width: 100%;
+     height: 100vh;
+      border-radius: 10px;
+      font-weight: bold;
+      color: white;
+      display: none;
+      z-index: 9999;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .success {
+      background-color: #4CAF50;
+    }
+
+    .warning {
+      background-color: #FF9800;
+    }
+
+    .info {
+      background-color: #2196F3;
+    }
+
+    .alerta.show {
+      display: block;
+      animation: fadeOut 3s forwards;
+    }
+
+    @keyframes fadeOut {
+      0% {
+        opacity: 1;
+      }
+
+      80% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 0;
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="alerta" class="alerta"></div>
+
+  <div class="container">
+    <div class="orden">
+      <h1 style="color: white;">REGISTRARSE</h1>
+      <input type="text" id="nombres" placeholder="Nombres" />
+      <input type="text" id="apellidos" placeholder="Apellidos" />
+      <input type="number" id="telefono" placeholder="Número de teléfono" />
+      <select id="tipoDocumento">
+        <option value="CC">Cédula de ciudadanía</option>
+        <option value="CE">Cédula de extranjería</option>
+        <option value="TI">Tarjeta de identidad</option>
+      </select>
+      <input type="number" id="documento" placeholder="Número de documento" />
+      <input type="email" id="correo" placeholder="Correo electrónico" />
+      <input type="date" id="nacimiento" placeholder="Fecha de nacimiento" />
+      <button onclick="enviar()">ENVIAR</button>
+    </div>
+
+    <div id="listaDatos"></div>
+  </div>
+
+  <script>
+    let data = [];
+
+    function mostrarAlerta(mensaje, tipo) {
+      const alerta = document.getElementById("alerta");
+      alerta.textContent = mensaje;
+      alerta.className = `alerta ${tipo} show`;
+
+      setTimeout(() => {
+        alerta.classList.remove("show");
+      }, 3000);
+    }
+
+    function enviar() {
+      const datos = {
+        nombre: document.getElementById("nombres").value,
+        apellidos: document.getElementById("apellidos").value,
+        telefono: document.getElementById("telefono").value,
+        tipoDocumento: document.getElementById("tipoDocumento").value,
+        documento: document.getElementById("documento").value,
+        correo: document.getElementById("correo").value,
+        nacimiento: document.getElementById("nacimiento").value,
+      };
+
+      if (!datos.nombre || !datos.apellidos || !datos.telefono) {
+        mostrarAlerta("Completa nombre, apellidos y teléfono.", "warning");
+        return;
+      }
+
+      data.unshift(datos);
+      pintarTabla();
+      mostrarAlerta("¡Registro exitoso!", "success");
+    }
+
+    function eliminar(index) {
+      const eliminado = data[index].nombre;
+      data.splice(index, 1);
+      pintarTabla();
+      mostrarAlerta(`${eliminado} fue eliminado.`, "info");
+    }
+
+    function pintarTabla() {
+      const contenedor = document.getElementById("listaDatos");
+      contenedor.innerHTML = "";
+
+      if (data.length === 0) {
+        contenedor.innerHTML = "<p style='color:white;'>No hay registros.</p>";
+        return;
+      }
+
+      let tabla = `
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Nombre</th>
+              <th>Apellido</th>
+              <th>Teléfono</th>
+              <th>Tipo Doc</th>
+              <th>N° Documento</th>
+              <th>Correo</th>
+              <th>Fecha Nac.</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      data.forEach((item, index) => {
+        tabla += `
+          <tr>
+            <td>${index + 1}</td>
+            <td>${item.nombre}</td>
+            <td>${item.apellidos}</td>
+            <td>${item.telefono}</td>
+            <td>${item.tipoDocumento}</td>
+            <td>${item.documento}</td>
+            <td>${item.correo}</td>
+            <td>${item.nacimiento}</td>
+            <td><button onclick="eliminar(${index})">❌</button></td>
+          </tr>
+        `;
+      });
+
+      tabla += `</tbody></table>`;
+      contenedor.innerHTML = tabla;
+    }
+  </script>
+</body>
+
+</html>
